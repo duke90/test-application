@@ -1,0 +1,82 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Test app</title>
+        
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="scripts/main.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="header-container">
+            <header class="wrapper clearfix">
+                <h1 class="title">Awesome empire citizen data validator test application</h1>
+            </header>
+        </div>
+
+        <div class="main-container">
+            <div class="main wrapper clearfix">
+
+                <article>
+                    <header>
+                        <h1>User data validator</h1>
+                        <p>Please fill the form and hit OK!</p>
+                    </header>
+                    <section>
+                        <h2>We are interested in your...</h2>
+                        <form>
+                            <div class="row">
+                                <div class="label">name</div>
+                                <input id="name" type="text" name='username' placeholder="eg. Darth Vader" required>
+                            </div>
+                            <div class="row">
+                                <div class="label">email</div>
+                                <input id="email" type="email" name="useremail" placeholder="eg. vader@deathstar.com" required>
+                            </div>
+                            <div class="row">
+                                <div class="label">occupation</div>
+                                <input id="occupation" type="text" name="occupation" placeholder="eg. sith" autocomplete="on" list="occupations">
+                                <datalist id="occupations">
+                                    <option value="sith">
+                                    <option value="stormtrooper">
+                                    <option value="droid">
+                                    <option value="jedi">
+                                    <option value="princess">
+                                    <option value="headhunter">
+                                    <option value="pilot">
+                                </datalist>
+                            </div>
+                            <div class="row">
+                                <div class="label">and birth date</div>
+                                <input id="birthdate" type="date" name="birthdate" placeholder="mm-dd-yyyy">
+                            </div>
+                        </form>
+                    </section>
+                    <footer>
+                        <button id="ok-button">OK!</button>
+                    </footer>
+                </article>
+
+                <aside id="response-container">
+                    <h3>Whoops, there is some disturbance in the Force!</h3>
+                    <div class="message">response comes here</div>
+                </aside>
+
+            </div> <!-- #main -->
+        </div> <!-- #main-container -->
+        
+    </body>
+</html>
