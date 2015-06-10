@@ -2,7 +2,8 @@
 
 var express = require('express'),
     bodyParser = require('body-parser'),
-    app = express();
+    app = express(),
+    TA = {};
 
 /**
  * CONFIGURATION
@@ -25,11 +26,38 @@ app.listen(config.port, config.host, function () {
   console.log('Test app is listening at http://%s:%s', host, port);
 });
 
+TA.validateData = function(data) {
+    console.log(data);
+    var response = {
+        status: 'OK'
+    };
+    
+    if (!data.username || !data.useremail) {
+        response.status = 'REQUIRED_FIELD_MISSING';
+    }
+    
+    if (data.birthdate) {
+        var timestamp = Date.parse(data.birthdate);
+
+        if ( isNaN(timestamp) ) {
+            response.status = 'INVALID_DATE';
+        } else {
+            var timeDiff = Date.now() - timestamp;
+            var diffDays = Math.round(timeDiff / (1000 * 3600 * 24));
+            
+            if ( diffDays < (18*365) ) {
+                response.status = 'NOT_EIGHTEEN';
+            }
+        }
+    }
+    
+    return response;
+};
+
 /**
  * ROUTES
  */
 app.post('/validate', function (req, res) {
     console.log('Incoming post');
-    console.log(req.body);
-    res.send('Post on pertestperajax');
+    res.send( TA.validateData(req.body) );
 });

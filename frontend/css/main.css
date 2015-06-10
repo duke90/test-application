@@ -190,11 +190,21 @@ body,
     padding: 10px;
 }
 
-input.warning {
-    border-color: #c0392b;
+input,
+input:focus,
+input:invalid,
+input:-moz-placeholder {
+    border: 1px solid grey;
+    box-shadow: none;
 }
 
-#response-container {
+input.warning {
+    border-color: #c0392b;
+    box-shadow: 0 0 2px #c0392b;
+}
+
+#response-container,
+#thanks-container {
     display: none;
 }
 

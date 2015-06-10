@@ -13,6 +13,11 @@ Application.config = {
         useremail: {
             empty: 'Please fill in your galactic-mail address.',
             invalid: 'This email address is invalid.'
+        },
+        birthdate: {
+            invalid: 'That cannot be a birthdate!',
+            tooYoung: 'Unfortunately you are way too young for us!',
+            noBorn: 'You cannot be from the future! Time travel is impossible!'
         }
     }
 };
@@ -24,46 +29,92 @@ Application.validateInputs = function() {
         var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         
         return emailReg.test(email);
-    }
+    };
+    var hasError = false;
     
     for (var i = 0; i < inputs.length; i++) {
         var current = $(inputs[i]);
+        var errorMessage = Application.config.errorMessages[current.attr('name')];
         
         if ( current.attr('required') && !current.val() ) {
             current.addClass('warning');
-            messageContainer.append( $('<p>').html(Application.config.errorMessages[current.attr('name')].empty) );
-            messageContainer.parent().show();
+            messageContainer.append( $('<p>').html(errorMessage.empty) );
+            hasError = true;
         }
         
-        if ( (current.attr('type') == 'email') && !isEmail(current.val()) ) {
+        if ( (current.attr('type') == 'email') && current.val() && !isEmail(current.val()) ) {
             current.addClass('warning');
-            messageContainer.append( $('<p>').html(Application.config.errorMessages[current.attr('name')].invalid) );
-            messageContainer.parent().show();
+            messageContainer.append( $('<p>').html(errorMessage.invalid) );
+            hasError = true;
         }
         
-        if ( (current.attr('name') == 'birthdate') && current.val() ) {
-            var dateFormatReg = /^(([0-9][0-9]-){2}([0-9]){4})$/;
+        if ( current.hasClass('pickaday-datepicker') && current.val() ) {
             var value = current.val();
-            
-            dateFormatReg.test(value)
-            
-            // TODO: use this lib because html datepcker and input field is a big shit
-            // http://dbushell.github.io/Pikaday/
-            
-            
-            
-            console.log(current.val());
-            console.log(new Date(current.val()));
+            var timestamp = Date.parse(value);
+
+            if ( isNaN(timestamp) ) {
+                current.addClass('warning');
+                messageContainer.append( $('<p>').html(errorMessage.invalid) );
+                hasError = true;
+            } else {
+                var timeDiff = Date.now() - timestamp;
+                var diffDays = Math.round(timeDiff / (1000 * 3600 * 24)); 
+                
+                if ( diffDays < 1 ) {
+                    current.addClass('warning');
+                    messageContainer.append( $('<p>').html(errorMessage.noBorn) );
+                    hasError = true;
+                } else if ( diffDays < (18*365) ) {
+                    current.addClass('warning');
+                    messageContainer.append( $('<p>').html(errorMessage.tooYoung) );
+                    hasError = true;
+                }
+            }
         }
-        
     }
     
-    //return {err: err, values: values};
+    return hasError && messageContainer.parent().show();
+};
+
+Application.getFormData = function(id) {
+    var form = $('#' + id);
+    var data = {};
+    
+    if (!id || !form.length) return;
+    
+    form.find('input').each(function(index) {
+        var current = $(this);
+        
+        data[current.attr('name')] = current.val();
+    });
+    
+    return data;
+};
+
+Application.postData = function(data) {
+    var responseContainer = $('#response-container');
+    
+    $.post( Application.config.ajaxEndpoint + '/validate', data, function( response ) {
+        if (response.status == 'OK') {
+            $('#thanks-container').fadeIn().delay(2000).fadeOut();            
+        } else {
+            responseContainer.find('.message').html('Sorry but the data was incorrect. Go again.');
+            responseContainer.fadeIn().delay(2000).fadeOut();
+        }
+    }, "json" ).fail(function() {
+        responseContainer.find('.message').html('Something went wrong, please try again!');
+        responseContainer.fadeIn().delay(2000).fadeOut();
+    });
 };
 
 Application.start = function() {
     var okButton = $('#ok-button').click(function() {
-        Application.validateInputs();
+        var isValidForm = !Application.validateInputs();
+        
+        if (isValidForm) {
+            Application.postData( Application.getFormData('personal-info') );
+            $('input').val('');
+        }
     });
     
     var inputs = $('form input').focus(function() {
@@ -72,5 +123,11 @@ Application.start = function() {
         
     });
     
-    var datePicker = $()
+    var datePicker = new Pikaday({
+        field: $('#birthdate')[0],
+        firstDay: 1,
+        minDate: new Date('1900-01-01'),
+        maxDate: new Date('2020-12-31'),
+        yearRange: [1900,2020]
+    });
 };

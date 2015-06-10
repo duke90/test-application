@@ -12,8 +12,10 @@
         
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/pickaday.css">
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="scripts/pickaday.js"></script>
         <script src="scripts/main.js"></script>
     </head>
     <body>
@@ -37,7 +39,7 @@
                     </header>
                     <section>
                         <h2>We are interested in your...</h2>
-                        <form>
+                        <form id="personal-info">
                             <div class="row">
                                 <div class="label">name</div>
                                 <input id="name" type="text" name='username' placeholder="eg. Darth Vader" required>
@@ -61,7 +63,7 @@
                             </div>
                             <div class="row">
                                 <div class="label">and birth date</div>
-                                <input id="birthdate" type="date" name="birthdate" placeholder="mm-dd-yyyy">
+                                <input id="birthdate" class="pickaday-datepicker" type="text" name="birthdate" placeholder="click here">
                             </div>
                         </form>
                     </section>
@@ -73,6 +75,10 @@
                 <aside id="response-container">
                     <h3>Whoops, there is some disturbance in the Force!</h3>
                     <div class="message">response comes here</div>
+                </aside>
+                <aside id="thanks-container">
+                    <h3>Thanks!</h3>
+                    <div class="message">May the force be with you!</div>
                 </aside>
 
             </div> <!-- #main -->
